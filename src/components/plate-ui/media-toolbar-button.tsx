@@ -96,8 +96,10 @@ export function MediaToolbarButton({
   const { openFilePicker } = useFilePicker({
     accept: currentConfig.accept,
     multiple: true,
-    onFilesSelected: ({ plainFiles: updatedFiles }) => {
-      (editor as any).tf.insert.media(updatedFiles);
+    onFilesSelected: (data) => {
+      if (data.plainFiles && data.plainFiles.length > 0) {
+        (editor as any).tf.insert.media(data.plainFiles);
+      }
     },
   });
 

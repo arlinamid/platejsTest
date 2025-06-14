@@ -10,7 +10,13 @@ const ourFileRouter = {
       return {};
     })
     .onUploadComplete(({ file }) => {
-      return { file };
+      // Return JSON-serializable data only
+      return {
+        key: file.key,
+        name: file.name,
+        size: file.size,
+        url: file.url,
+      };
     }),
 } satisfies FileRouter;
 

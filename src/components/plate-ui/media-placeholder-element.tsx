@@ -15,7 +15,12 @@ import {
   updateUploadHistory,
   VideoPlugin,
 } from '@udecode/plate-media/react';
-import { PlateElement, useEditorPlugin, withHOC , withRef } from '@udecode/plate/react';
+import {
+  PlateElement,
+  useEditorPlugin,
+  withHOC,
+  withRef,
+} from '@udecode/plate/react';
 import { AudioLines, FileUp, Film, ImageIcon } from 'lucide-react';
 import { useFilePicker } from 'use-file-picker';
 
@@ -76,13 +81,16 @@ export const MediaPlaceholderElement = withHOC(
       const { openFilePicker } = useFilePicker({
         accept: currentContent.accept,
         multiple: true,
-        onFilesSelected: ({ plainFiles: updatedFiles }) => {
-          const firstFile = updatedFiles[0];
-          const restFiles = updatedFiles.slice(1);
+        onFilesSelected: (data) => {
+          if (data.plainFiles && data.plainFiles.length > 0) {
+            const updatedFiles = data.plainFiles;
+            const firstFile = updatedFiles[0];
+            const restFiles = updatedFiles.slice(1);
 
-          replaceCurrentPlaceholder(firstFile);
+            replaceCurrentPlaceholder(firstFile);
 
-          restFiles.length > 0 && (editor as any).tf.insert.media(restFiles);
+            restFiles.length > 0 && (editor as any).tf.insert.media(restFiles);
+          }
         },
       });
 

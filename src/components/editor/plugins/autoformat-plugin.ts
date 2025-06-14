@@ -38,6 +38,7 @@ import {
 } from '@udecode/plate-indent-list';
 import { openNextToggles, TogglePlugin } from '@udecode/plate-toggle/react';
 import { ParagraphPlugin } from '@udecode/plate/react';
+import { PAGE_BREAK_KEY } from './page-break-plugin';
 
 export const format = (editor: SlateEditor, customFormatting: any) => {
   if (editor.selection) {
@@ -189,6 +190,18 @@ export const autoformatBlocks: AutoformatRule[] = [
     type: HorizontalRulePlugin.key,
     format: (editor) => {
       editor.tf.setNodes({ type: HorizontalRulePlugin.key });
+      editor.tf.insertNodes({
+        children: [{ text: '' }],
+        type: ParagraphPlugin.key,
+      });
+    },
+  },
+  {
+    match: ['===', '=== '],
+    mode: 'block',
+    type: PAGE_BREAK_KEY,
+    format: (editor) => {
+      editor.tf.setNodes({ type: PAGE_BREAK_KEY });
       editor.tf.insertNodes({
         children: [{ text: '' }],
         type: ParagraphPlugin.key,

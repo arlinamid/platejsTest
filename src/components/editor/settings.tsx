@@ -52,12 +52,10 @@ interface SettingsContextType {
 }
 
 export const models: Model[] = [
-  { label: 'gpt-4o-mini', value: 'gpt-4o-mini' },
-  { label: 'gpt-4o', value: 'gpt-4o' },
-  { label: 'gpt-4-turbo', value: 'gpt-4-turbo' },
-  { label: 'gpt-4', value: 'gpt-4' },
-  { label: 'gpt-3.5-turbo', value: 'gpt-3.5-turbo' },
-  { label: 'gpt-3.5-turbo-instruct', value: 'gpt-3.5-turbo-instruct' },
+  { label: 'gemini-1.5-flash', value: 'gemini-1.5-flash' },
+  { label: 'gemini-1.5-pro', value: 'gemini-1.5-pro' },
+  { label: 'gemini-1.0-pro', value: 'gemini-1.0-pro' },
+  { label: 'gemini-2.0-flash-001', value: 'gemini-2.0-flash-001' },
 ];
 
 const SettingsContext = createContext<SettingsContextType | undefined>(
@@ -66,7 +64,7 @@ const SettingsContext = createContext<SettingsContextType | undefined>(
 
 export function SettingsProvider({ children }: { children: ReactNode }) {
   const [keys, setKeys] = useState({
-    openai: '',
+    gemini: '',
     uploadthing: '',
   });
   const [model, setModel] = useState<Model>(models[0]);
@@ -88,7 +86,7 @@ export function useSettings() {
   return (
     context ?? {
       keys: {
-        openai: '',
+        gemini: '',
         uploadthing: '',
       },
       model: models[0],
@@ -120,7 +118,7 @@ export function SettingsDialog() {
       ...completeOptions,
       body: {
         ...completeOptions.body,
-        apiKey: tempKeys.openai,
+        apiKey: tempKeys.gemini,
         model: model.value,
       },
     });
@@ -148,8 +146,8 @@ export function SettingsDialog() {
           <a
             className="flex items-center"
             href={
-              service === 'openai'
-                ? 'https://platform.openai.com/api-keys'
+              service === 'gemini'
+                ? 'https://aistudio.google.com/app/apikey'
                 : 'https://uploadthing.com/dashboard'
             }
             rel="noopener noreferrer"
@@ -237,7 +235,7 @@ export function SettingsDialog() {
             </div>
 
             <div className="space-y-4">
-              {renderApiKeyInput('openai', 'OpenAI API key')}
+              {renderApiKeyInput('gemini', 'Gemini API key')}
 
               <div className="group relative">
                 <label

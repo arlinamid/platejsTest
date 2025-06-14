@@ -62,130 +62,150 @@ import { TableDropdownMenu } from './table-dropdown-menu';
 import { ToggleToolbarButton } from './toggle-toolbar-button';
 import { ToolbarGroup } from './toolbar';
 import { TurnIntoDropdownMenu } from './turn-into-dropdown-menu';
+import { VersionHistoryToolbarButton } from './version-history-toolbar-button';
+import { RulerToggleButton, PageSetupButton, LayoutToggleButton, MultiPageToggleButton } from './layout-toolbar-buttons';
+import { PageBreakToolbarButton } from './page-break-toolbar-button';
+import { IndexSidebarToolbarButton } from './index-sidebar-toolbar-button';
 
 export function FixedToolbarButtons() {
   const readOnly = useEditorReadOnly();
 
   return (
-    <div className="flex w-full">
+    <div className="flex flex-col w-full">
       {!readOnly && (
         <>
-          <ToolbarGroup>
-            <UndoToolbarButton />
-            <RedoToolbarButton />
+          {/* First Row - Main Actions */}
+          <div className="flex w-full items-center border-b border-border/50 pb-1 mb-1">
+            <ToolbarGroup>
+              <UndoToolbarButton />
+              <RedoToolbarButton />
+            </ToolbarGroup>
+
+            <ToolbarGroup>
+              <AIToolbarButton tooltip="AI commands">
+                <WandSparklesIcon />
+              </AIToolbarButton>
+            </ToolbarGroup>
+
+            <ToolbarGroup>
+              <ExportToolbarButton>
+                <ArrowUpToLineIcon />
+              </ExportToolbarButton>
+              <ImportToolbarButton />
+            </ToolbarGroup>
+
+            <ToolbarGroup>
+              <InsertDropdownMenu />
+              <TurnIntoDropdownMenu />
+              <FontSizeToolbarButton />
+            </ToolbarGroup>
+
+            <ToolbarGroup>
+              <MarkToolbarButton nodeType={BoldPlugin.key} tooltip="Bold (⌘+B)">
+                <BoldIcon />
+              </MarkToolbarButton>
+              <MarkToolbarButton
+                nodeType={ItalicPlugin.key}
+                tooltip="Italic (⌘+I)"
+              >
+                <ItalicIcon />
+              </MarkToolbarButton>
+              <MarkToolbarButton
+                nodeType={UnderlinePlugin.key}
+                tooltip="Underline (⌘+U)"
+              >
+                <UnderlineIcon />
+              </MarkToolbarButton>
+              <MarkToolbarButton
+                nodeType={StrikethroughPlugin.key}
+                tooltip="Strikethrough (⌘+⇧+M)"
+              >
+                <StrikethroughIcon />
+              </MarkToolbarButton>
+              <MarkToolbarButton nodeType={CodePlugin.key} tooltip="Code (⌘+E)">
+                <Code2Icon />
+              </MarkToolbarButton>
+            </ToolbarGroup>
+
+            <ToolbarGroup>
+              <ColorDropdownMenu
+                nodeType={FontColorPlugin.key}
+                tooltip="Text color"
+              >
+                <BaselineIcon />
+              </ColorDropdownMenu>
+              <ColorDropdownMenu
+                nodeType={FontBackgroundColorPlugin.key}
+                tooltip="Background color"
+              >
+                <PaintBucketIcon />
+              </ColorDropdownMenu>
+            </ToolbarGroup>
+
+            <div className="grow" />
+
+            <ToolbarGroup>
+              <MarkToolbarButton nodeType={HighlightPlugin.key} tooltip="Highlight">
+                <HighlighterIcon />
+              </MarkToolbarButton>
+              <CommentToolbarButton />
+            </ToolbarGroup>
+
+            <ToolbarGroup>
+              <ModeDropdownMenu />
+            </ToolbarGroup>
+          </div>
+
+          {/* Second Row - Layout & Content */}
+          <div className="flex w-full items-center">
+            <ToolbarGroup>
+              <AlignDropdownMenu />
+              <NumberedIndentListToolbarButton />
+              <BulletedIndentListToolbarButton />
+              <IndentTodoToolbarButton />
+              <ToggleToolbarButton />
+            </ToolbarGroup>
+
+            <ToolbarGroup>
+              <LinkToolbarButton />
+              <TableDropdownMenu />
+              <EmojiDropdownMenu />
+            </ToolbarGroup>
+
+            <ToolbarGroup>
+              <MediaToolbarButton nodeType={ImagePlugin.key} />
+              <MediaToolbarButton nodeType={VideoPlugin.key} />
+              <MediaToolbarButton nodeType={AudioPlugin.key} />
+              <MediaToolbarButton nodeType={FilePlugin.key} />
+            </ToolbarGroup>
+
+            <ToolbarGroup>
+              <LineHeightDropdownMenu />
+              <OutdentToolbarButton />
+              <IndentToolbarButton />
+            </ToolbarGroup>
+
+            <ToolbarGroup>
+              <VersionHistoryToolbarButton />
+            </ToolbarGroup>
+
+                      <ToolbarGroup>
+            <RulerToggleButton />
+            <PageSetupButton />
+            <LayoutToggleButton />
+            <MultiPageToggleButton />
+            <PageBreakToolbarButton />
+            <IndexSidebarToolbarButton />
           </ToolbarGroup>
 
-          <ToolbarGroup>
-            <AIToolbarButton tooltip="AI commands">
-              <WandSparklesIcon />
-            </AIToolbarButton>
-          </ToolbarGroup>
+            <ToolbarGroup>
+              <MoreDropdownMenu />
+            </ToolbarGroup>
 
-          <ToolbarGroup>
-            <ExportToolbarButton>
-              <ArrowUpToLineIcon />
-            </ExportToolbarButton>
-
-            <ImportToolbarButton />
-          </ToolbarGroup>
-
-          <ToolbarGroup>
-            <InsertDropdownMenu />
-            <TurnIntoDropdownMenu />
-            <FontSizeToolbarButton />
-          </ToolbarGroup>
-
-          <ToolbarGroup>
-            <MarkToolbarButton nodeType={BoldPlugin.key} tooltip="Bold (⌘+B)">
-              <BoldIcon />
-            </MarkToolbarButton>
-
-            <MarkToolbarButton
-              nodeType={ItalicPlugin.key}
-              tooltip="Italic (⌘+I)"
-            >
-              <ItalicIcon />
-            </MarkToolbarButton>
-
-            <MarkToolbarButton
-              nodeType={UnderlinePlugin.key}
-              tooltip="Underline (⌘+U)"
-            >
-              <UnderlineIcon />
-            </MarkToolbarButton>
-
-            <MarkToolbarButton
-              nodeType={StrikethroughPlugin.key}
-              tooltip="Strikethrough (⌘+⇧+M)"
-            >
-              <StrikethroughIcon />
-            </MarkToolbarButton>
-
-            <MarkToolbarButton nodeType={CodePlugin.key} tooltip="Code (⌘+E)">
-              <Code2Icon />
-            </MarkToolbarButton>
-
-            <ColorDropdownMenu
-              nodeType={FontColorPlugin.key}
-              tooltip="Text color"
-            >
-              <BaselineIcon />
-            </ColorDropdownMenu>
-
-            <ColorDropdownMenu
-              nodeType={FontBackgroundColorPlugin.key}
-              tooltip="Background color"
-            >
-              <PaintBucketIcon />
-            </ColorDropdownMenu>
-          </ToolbarGroup>
-
-          <ToolbarGroup>
-            <AlignDropdownMenu />
-
-            <NumberedIndentListToolbarButton />
-            <BulletedIndentListToolbarButton />
-            <IndentTodoToolbarButton />
-            <ToggleToolbarButton />
-          </ToolbarGroup>
-
-          <ToolbarGroup>
-            <LinkToolbarButton />
-            <TableDropdownMenu />
-            <EmojiDropdownMenu />
-          </ToolbarGroup>
-
-          <ToolbarGroup>
-            <MediaToolbarButton nodeType={ImagePlugin.key} />
-            <MediaToolbarButton nodeType={VideoPlugin.key} />
-            <MediaToolbarButton nodeType={AudioPlugin.key} />
-            <MediaToolbarButton nodeType={FilePlugin.key} />
-          </ToolbarGroup>
-
-          <ToolbarGroup>
-            <LineHeightDropdownMenu />
-            <OutdentToolbarButton />
-            <IndentToolbarButton />
-          </ToolbarGroup>
-
-          <ToolbarGroup>
-            <MoreDropdownMenu />
-          </ToolbarGroup>
+            <div className="grow" />
+          </div>
         </>
       )}
-
-      <div className="grow" />
-
-      <ToolbarGroup>
-        <MarkToolbarButton nodeType={HighlightPlugin.key} tooltip="Highlight">
-          <HighlighterIcon />
-        </MarkToolbarButton>
-        <CommentToolbarButton />
-      </ToolbarGroup>
-
-      <ToolbarGroup>
-        <ModeDropdownMenu />
-      </ToolbarGroup>
     </div>
   );
 }

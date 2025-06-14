@@ -47,12 +47,14 @@ export function ImportToolbarButton({ children, ...props }: DropdownMenuProps) {
   const { openFilePicker } = useFilePicker({
     accept,
     multiple: false,
-    onFilesSelected: async ({ plainFiles }) => {
-      const text = await plainFiles[0].text();
+    onFilesSelected: async (data) => {
+      if (data.plainFiles && data.plainFiles.length > 0) {
+        const text = await data.plainFiles[0].text();
 
-      const nodes = getFileNodes(text, type);
+        const nodes = getFileNodes(text, type);
 
-      editor.tf.insertNodes(nodes);
+        editor.tf.insertNodes(nodes);
+      }
     },
   });
 

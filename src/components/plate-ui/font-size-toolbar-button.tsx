@@ -45,19 +45,24 @@ export function FontSizeToolbarButton() {
   const { api, editor } = useEditorPlugin(FontSizePlugin);
 
   const cursorFontSize = useEditorSelector((editor) => {
-    const fontSize = editor.api.marks()?.[FontSizePlugin.key];
+    try {
+      const marks = editor.api.marks();
+      const fontSize = marks?.[FontSizePlugin.key];
 
-    if (fontSize) {
-      return toUnitLess(fontSize as string);
+      if (fontSize) {
+        return toUnitLess(fontSize as string);
+      }
+
+      const [block] = editor.api.block<TElement>() || [];
+
+      if (!block?.type) return DEFAULT_FONT_SIZE;
+
+      return block.type in FONT_SIZE_MAP
+        ? FONT_SIZE_MAP[block.type as keyof typeof FONT_SIZE_MAP]
+        : DEFAULT_FONT_SIZE;
+    } catch {
+      return DEFAULT_FONT_SIZE;
     }
-
-    const [block] = editor.api.block<TElement>() || [];
-
-    if (!block?.type) return DEFAULT_FONT_SIZE;
-
-    return block.type in FONT_SIZE_MAP
-      ? FONT_SIZE_MAP[block.type as keyof typeof FONT_SIZE_MAP]
-      : DEFAULT_FONT_SIZE;
   }, []);
 
   const handleInputChange = () => {
