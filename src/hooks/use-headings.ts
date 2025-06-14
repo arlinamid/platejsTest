@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import { useEditorRef } from '@udecode/plate/react';
 
 interface HeadingItem {
@@ -12,7 +12,7 @@ interface HeadingItem {
 export function useHeadings() {
   const editor = useEditorRef();
   const [headings, setHeadings] = useState<HeadingItem[]>([]);
-  const [lastUpdateTime, setLastUpdateTime] = useState(0);
+  const lastUpdateTimeRef = useRef(0);
 
   // Extract headings from the editor content
   const extractHeadings = useCallback(() => {
@@ -60,32 +60,36 @@ export function useHeadings() {
     return headingItems;
   }, []);
 
-  // Update headings with throttling
+  // Update headings with throttling using ref to avoid dependency issues
   const updateHeadings = useCallback(() => {
     const now = Date.now();
-    if (now - lastUpdateTime < 100) return; // Throttle updates
+    if (now - lastUpdateTimeRef.current < 100) return; // Throttle updates
     
     const newHeadings = extractHeadings();
     setHeadings(newHeadings);
-    setLastUpdateTime(now);
-  }, [extractHeadings, lastUpdateTime]);
+    lastUpdateTimeRef.current = now;
+  }, [extractHeadings]);
+
+  // Create a stable reference to updateHeadings
+  const updateHeadingsRef = useRef(updateHeadings);
+  updateHeadingsRef.current = updateHeadings;
 
   // Listen for editor changes
   useEffect(() => {
     if (!editor) return;
 
+    // Create a stable function that calls the current updateHeadings
+    const stableUpdateHeadings = () => updateHeadingsRef.current();
+
     // Initial update
-    setTimeout(updateHeadings, 100);
+    const initialTimer = setTimeout(stableUpdateHeadings, 100);
 
-    // Listen for editor value changes
-    const unsubscribe = editor.api.redecorate();
-
-    // Set up multiple listeners for different types of changes
+    // Set up observers
     const observers: (() => void)[] = [];
 
-    // 1. MutationObserver for DOM changes
+    // 1. MutationObserver for DOM changes (primary detection method)
     const mutationObserver = new MutationObserver(() => {
-      setTimeout(updateHeadings, 50);
+      setTimeout(stableUpdateHeadings, 50);
     });
 
     const editorElement = document.querySelector('[data-slate-editor="true"]');
@@ -94,40 +98,19 @@ export function useHeadings() {
         childList: true,
         subtree: true,
         characterData: true,
-        attributes: true,
       });
       observers.push(() => mutationObserver.disconnect());
     }
 
-    // 2. Keyboard event listeners
-    const handleKeyUp = () => setTimeout(updateHeadings, 100);
-    document.addEventListener('keyup', handleKeyUp);
-    observers.push(() => document.removeEventListener('keyup', handleKeyUp));
-
-    // 3. Input event listeners
-    const handleInput = () => setTimeout(updateHeadings, 100);
-    if (editorElement) {
-      editorElement.addEventListener('input', handleInput);
-      observers.push(() => editorElement.removeEventListener('input', handleInput));
-    }
-
-    // 4. Focus/blur events
-    const handleFocusChange = () => setTimeout(updateHeadings, 200);
-    document.addEventListener('focusin', handleFocusChange);
-    document.addEventListener('focusout', handleFocusChange);
-    observers.push(() => {
-      document.removeEventListener('focusin', handleFocusChange);
-      document.removeEventListener('focusout', handleFocusChange);
-    });
-
-    // 5. Periodic updates as fallback
-    const interval = setInterval(updateHeadings, 3000);
+    // 2. Periodic updates as fallback (reduced frequency)
+    const interval = setInterval(stableUpdateHeadings, 5000);
     observers.push(() => clearInterval(interval));
 
     return () => {
+      clearTimeout(initialTimer);
       observers.forEach(cleanup => cleanup());
     };
-  }, [editor, updateHeadings]);
+  }, [editor]);
 
   return headings;
 } 
